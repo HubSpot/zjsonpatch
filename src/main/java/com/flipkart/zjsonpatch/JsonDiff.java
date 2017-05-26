@@ -67,6 +67,16 @@ public final class JsonDiff {
         return getJsonNodes(diffs);
     }
 
+    public static ArrayNode getJsonNodes(List<Diff> diffs) {
+        JsonNodeFactory FACTORY = JsonNodeFactory.instance;
+        final ArrayNode patch = FACTORY.arrayNode();
+        for (Diff diff : diffs) {
+            ObjectNode jsonNode = getJsonNode(FACTORY, diff);
+            patch.add(jsonNode);
+        }
+        return patch;
+    }
+
     private static List<Object> getMatchingValuePath(Map<JsonNode, List<Object>> unchangedValues, JsonNode value) {
         return unchangedValues.get(value);
     }
@@ -233,16 +243,6 @@ public final class JsonDiff {
                 counters.set(idx, counters.get(idx) + 1);
             }
         }
-    }
-
-    private static ArrayNode getJsonNodes(List<Diff> diffs) {
-        JsonNodeFactory FACTORY = JsonNodeFactory.instance;
-        final ArrayNode patch = FACTORY.arrayNode();
-        for (Diff diff : diffs) {
-            ObjectNode jsonNode = getJsonNode(FACTORY, diff);
-            patch.add(jsonNode);
-        }
-        return patch;
     }
 
     private static ObjectNode getJsonNode(JsonNodeFactory FACTORY, Diff diff) {

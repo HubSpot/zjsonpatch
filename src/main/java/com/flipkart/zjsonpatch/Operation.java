@@ -24,7 +24,7 @@ import java.util.Map;
  * User: gopi.vishwakarma
  * Date: 30/07/14
  */
-enum Operation {
+public enum Operation {
     ADD("add"),
     REMOVE("remove"),
     REPLACE("replace"),
@@ -32,7 +32,7 @@ enum Operation {
     COPY("copy"),
     TEST("test");
 
-    private final static Map<String, Operation> OPS = new ImmutableMap.Builder()
+    private final static Map<String, Operation> OPS = new ImmutableMap.Builder<String, Operation>()
             .put(ADD.rfcName, ADD)
             .put(REMOVE.rfcName, REMOVE)
             .put(REPLACE.rfcName, REPLACE)

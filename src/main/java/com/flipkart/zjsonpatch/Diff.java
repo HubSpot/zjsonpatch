@@ -24,7 +24,7 @@ import java.util.List;
  * User: gopi.vishwakarma
  * Date: 30/07/14
  */
-class Diff {
+public class Diff {
     private final Operation operation;
     private final List<Object> path;
     private final JsonNode value;
@@ -57,6 +57,10 @@ class Diff {
 
     public static Diff generateDiff(Operation replace, List<Object> path, JsonNode target) {
         return new Diff(replace, path, target);
+    }
+    
+    public static Diff generateDiff(Operation pathOp, List<Object> fromPath, List<Object> toPath) {
+        return new Diff(pathOp, fromPath, toPath);
     }
 
     List<Object> getToPath() {
