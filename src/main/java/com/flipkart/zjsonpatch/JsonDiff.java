@@ -43,7 +43,7 @@ public final class JsonDiff {
     private final static class EncodePathFunction implements Function<Object, String> {
         @Override
         public String apply(Object object) {
-            String path = object.toString(); // see http://tools.ietf.org/html/rfc6901#section-4
+            String path = object != null ? object.toString() : ""; // see http://tools.ietf.org/html/rfc6901#section-4
             return path.replaceAll("~", "~0").replaceAll("/", "~1");
         }
     }
@@ -65,6 +65,16 @@ public final class JsonDiff {
         introduceCopyOperation(source, target, diffs);
 
         return getJsonNodes(diffs);
+    }
+
+    public static ArrayNode getJsonNodes(List<Diff> diffs) {
+        JsonNodeFactory FACTORY = JsonNodeFactory.instance;
+        final ArrayNode patch = FACTORY.arrayNode();
+        for (Diff diff : diffs) {
+            ObjectNode jsonNode = getJsonNode(FACTORY, diff);
+            patch.add(jsonNode);
+        }
+        return patch;
     }
 
     private static List<Object> getMatchingValuePath(Map<JsonNode, List<Object>> unchangedValues, JsonNode value) {
@@ -106,8 +116,10 @@ public final class JsonDiff {
                     break;
                 case ARRAY:
                     computeArray(unchangedValues, path, source, target);
+                    break;
                 default:
-                /* nothing */
+                    /* nothing */
+                    return;
             }
         }
     }
@@ -233,16 +245,6 @@ public final class JsonDiff {
                 counters.set(idx, counters.get(idx) + 1);
             }
         }
-    }
-
-    private static ArrayNode getJsonNodes(List<Diff> diffs) {
-        JsonNodeFactory FACTORY = JsonNodeFactory.instance;
-        final ArrayNode patch = FACTORY.arrayNode();
-        for (Diff diff : diffs) {
-            ObjectNode jsonNode = getJsonNode(FACTORY, diff);
-            patch.add(jsonNode);
-        }
-        return patch;
     }
 
     private static ObjectNode getJsonNode(JsonNodeFactory FACTORY, Diff diff) {

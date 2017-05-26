@@ -40,7 +40,7 @@ public final class JsonPatch {
     private final static class DecodePathFunction implements Function<String, String> {
         @Override
         public String apply(String path) {
-            return path.replaceAll("~1", "/").replaceAll("~0", "~"); // see http://tools.ietf.org/html/rfc6901#section-4
+            return path != null ? path.replaceAll("~1", "/").replaceAll("~0", "~") : ""; // see http://tools.ietf.org/html/rfc6901#section-4
         }
     }
 
