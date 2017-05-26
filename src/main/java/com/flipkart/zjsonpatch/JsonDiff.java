@@ -43,7 +43,7 @@ public final class JsonDiff {
     private final static class EncodePathFunction implements Function<Object, String> {
         @Override
         public String apply(Object object) {
-            String path = object.toString(); // see http://tools.ietf.org/html/rfc6901#section-4
+            String path = object != null ? object.toString() : ""; // see http://tools.ietf.org/html/rfc6901#section-4
             return path.replaceAll("~", "~0").replaceAll("/", "~1");
         }
     }
@@ -116,8 +116,10 @@ public final class JsonDiff {
                     break;
                 case ARRAY:
                     computeArray(unchangedValues, path, source, target);
+                    break;
                 default:
-                /* nothing */
+                    /* nothing */
+                    return;
             }
         }
     }
