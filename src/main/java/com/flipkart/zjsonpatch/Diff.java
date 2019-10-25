@@ -18,36 +18,44 @@ package com.flipkart.zjsonpatch;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.List;
-
 /**
  * User: gopi.vishwakarma
  * Date: 30/07/14
  */
 public class Diff {
     private final Operation operation;
-    private final List<Object> path;
+    private final JsonPointer path;
     private final JsonNode value;
-    private List<Object> toPath; //only to be used in move operation
+    private JsonPointer toPath; //only to be used in move operation
+    private final JsonNode srcValue; // only used in replace operation
 
-    Diff(Operation operation, List<Object> path, JsonNode value) {
+    Diff(Operation operation, JsonPointer path, JsonNode value) {
         this.operation = operation;
         this.path = path;
         this.value = value;
+        this.srcValue = null;
     }
 
-    Diff(Operation operation, List<Object> fromPath, List<Object> toPath) {
+    Diff(Operation operation, JsonPointer fromPath, JsonPointer toPath) {
         this.operation = operation;
         this.path = fromPath;
         this.toPath = toPath;
         this.value = null;
+        this.srcValue = null;
+    }
+
+    Diff(Operation operation, JsonPointer path, JsonNode srcValue, JsonNode value) {
+        this.operation = operation;
+        this.path = path;
+        this.value = value;
+        this.srcValue = srcValue;
     }
 
     public Operation getOperation() {
         return operation;
     }
 
-    public List<Object> getPath() {
+    public JsonPointer getPath() {
         return path;
     }
 
@@ -55,15 +63,23 @@ public class Diff {
         return value;
     }
 
-    public static Diff generateDiff(Operation replace, List<Object> path, JsonNode target) {
+    public static Diff generateDiff(Operation replace, JsonPointer path, JsonNode target) {
         return new Diff(replace, path, target);
     }
-    
+
+    public static Diff generateDiff(Operation replace, JsonPointer path, JsonNode source, JsonNode target) {
+        return new Diff(replace, path, source, target);
+    }
+
     public static Diff generateDiff(Operation pathOp, List<Object> fromPath, List<Object> toPath) {
         return new Diff(pathOp, fromPath, toPath);
     }
 
-    List<Object> getToPath() {
+    JsonPointer getToPath() {
         return toPath;
+    }
+
+    public JsonNode getSrcValue(){
+        return srcValue;
     }
 }
